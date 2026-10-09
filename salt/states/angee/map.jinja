@@ -1,0 +1,2 @@
+{%- import_yaml "angee/defaults.yaml" as defaults %}
+{%- set angee = salt["pillar.get"]("angee", default=defaults.angee, merge=True) %}

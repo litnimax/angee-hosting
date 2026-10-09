@@ -1,0 +1,52 @@
+# Angee Stack Root
+
+The directory containing this file is `ANGEE_ROOT`. This stack is already
+initialized: its authoritative manifest is `angee.yaml` beside this file.
+
+## Stack Ownership
+
+- Do not run `angee init` in this directory or anywhere below it. In particular,
+  never create a nested `.angee/` inside `sources/`.
+- Source checkouts are not stack roots. Their own `AGENTS.md` files govern source
+  changes, but they do not move stack or workspace lifecycle into the checkout.
+- All workspaces created for this stack belong under `ANGEE_ROOT/workspaces/`.
+  Do not create or move workspaces under a source checkout.
+- Workspace branches are namespaced by this stack's name, `<stack>/<workspace>`,
+  and never bare `workspace/<name>`; shared work declares an explicit
+  `feature/<topic>` branch. Publish a slot only when it has commits beyond its
+  base ref, and only to the remote the slot's git config resolves as its push
+  remote.
+- Run stack and workspace lifecycle commands from `ANGEE_ROOT`. If working from
+  another directory, resolve this directory to an absolute path and pass it as
+  `angee --root "$ANGEE_ROOT" ...`; never point `--root` at a source checkout.
+
+At the start of a shell session, change to the directory containing this file
+before capturing the root:
+
+```sh
+ANGEE_ROOT=$(pwd -P)
+test -f "$ANGEE_ROOT/angee.yaml" || exit 1
+```
+
+## Restart Through The Operator
+
+The angee operator is this stack's monitoring and management service. It is not
+part of the frontend or the backend and keeps running while they restart, so use
+it for every restart, never by killing or relaunching processes by hand:
+
+```sh
+angee --root "$ANGEE_ROOT" job run deps --chained-restart   # whole application
+angee --root "$ANGEE_ROOT" restart <service>...                       # single services
+```
+
+The whole-application restart is the same as Settings > Operator > Restart
+application: it re-runs the `deps` job and its downstream jobs, then
+restarts every service that waits on them. Apply dependency changes with it, and
+never run `uv sync` on the stack's venv while the stack runs. The operator API, a
+dry-run preview and the rest are in
+[Restart the running stack](https://github.com/ang-ee/angee-django/blob/main/docs/howto/getstarted.md#restart-the-running-stack).
+
+When entering a source checkout, read and follow its nested `AGENTS.md` for code,
+testing, and repository workflow. This file remains authoritative for which
+stack owns workspace lifecycle.
+

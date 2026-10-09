@@ -1,0 +1,41 @@
+# Defaults for the angee formula. Pillar `angee:` is merged over these.
+angee:
+  # Host packages a docker-mode Angee stack needs: the angee CLI drives Docker
+  # (compose + buildx) and materializes git sources.
+  packages:
+    - ca-certificates
+    - curl
+    - git
+    - docker.io
+    - docker-compose-v2
+    - docker-buildx
+
+  # The angee CLI + operator binaries, from the ang-ee/angee-operator releases.
+  cli:
+    version: v0.18.0
+    release_url: https://github.com/ang-ee/angee-operator/releases/download
+    install_dir: /opt/angee
+    bin_dir: /usr/local/bin
+
+  # Images published for linux/amd64 only. On any other architecture they are
+  # pulled with an explicit platform (and run under binfmt emulation), because
+  # Docker refuses to pull a manifest list without an entry for the host arch.
+  amd64_only_images:
+    - ghcr.io/ang-ee/django-angee-base:latest
+
+  # The account that owns stack roots and runs the angee CLI. Its uid must be
+  # the uid the Python service images run as (user `angee`, 1000, in
+  # django-angee-base): they write the project root and the framework workspace
+  # the CLI materializes. On a host where uid 1000 already exists, name that user.
+  user:
+    name: angee
+    uid: 1000
+
+  # How long `angee dev -d` waits for a stack's jobs (provision, codegen,
+  # frontend build) before giving up. The first boot pulls every image.
+  job_timeout: 60m
+
+  # Stacks to bring up, keyed by name:
+  #   <name>:
+  #     root: /srv/<name>   # ANGEE_ROOT: the directory holding angee.yaml
+  stacks: {}

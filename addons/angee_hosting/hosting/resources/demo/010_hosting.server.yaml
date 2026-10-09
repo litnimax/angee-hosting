@@ -1,0 +1,13 @@
+# Demo server: the local OrbStack VM this repository's README deploys to.
+_meta:
+  model: hosting.Server
+rows:
+  - xref: angee_host_1
+    fields:
+      name: angee-host-1
+      address: 192.168.139.180
+      ssh_user: root
+      ssh_port: 22
+      arch: arm64
+      status: ready
+      notes: Local OrbStack VM, Ubuntu 26.04. Deployed with scripts/deploy.sh.

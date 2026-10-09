@@ -1,0 +1,10 @@
+# Demo stack: this control panel itself, as salt/pillar/angee.sls declares it.
+_meta:
+  model: hosting.Stack
+rows:
+  - xref: angee_hosting
+    fields:
+      name: angee-hosting
+      server: hosting.angee_host_1
+      root: /srv/angee-hosting
+      status: active

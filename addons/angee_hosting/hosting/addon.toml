@@ -1,0 +1,12 @@
+[addon]
+name = "angee_hosting.hosting"
+description = "Hosting control panel: the servers Salt manages and the Angee stacks deployed on them."
+keywords = ["hosting", "servers", "stacks", "salt"]
+category = "Operations"
+depends_on = ["angee.iam", "angee.resources", "angee.graphql"]
+
+[resources]
+demo = [
+  "resources/demo/010_hosting.server.yaml",
+  { path = "resources/demo/020_hosting.stack.yaml", depends_on = "resources/demo/010_hosting.server.yaml" },
+]
